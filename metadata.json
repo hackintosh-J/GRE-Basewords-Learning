@@ -1,0 +1,5 @@
+{
+  "name": "GRE Vocabulary Builder",
+  "description": "An interactive web application to help you quickly learn and memorize GRE vocabulary words using a flashcard-style interface. Load your custom word list and start studying.",
+  "requestFramePermissions": []
+}
