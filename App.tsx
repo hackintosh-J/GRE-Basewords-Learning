@@ -39,7 +39,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch('/list.json');
+        const response = await fetch('./list.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const jsonData: VocabularyData = await response.json();
         if (!jsonData.sections || jsonData.sections.length === 0) throw new Error("No sections in list.json.");

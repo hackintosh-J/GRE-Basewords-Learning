@@ -42,7 +42,7 @@ const MindMapModal: React.FC<MindMapModalProps> = ({ onClose }) => {
   useEffect(() => {
     const fetchMindMapData = async () => {
       try {
-        const response = await fetch('/mindmap.json');
+        const response = await fetch('./mindmap.json');
         if (!response.ok) {
           throw new Error('Failed to load mind map data.');
         }
