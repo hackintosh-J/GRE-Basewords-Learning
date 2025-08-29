@@ -1,4 +1,3 @@
-
 export interface Derivative {
   word: string;
   pos: string;
@@ -24,4 +23,33 @@ export interface Section {
 
 export interface VocabularyData {
   sections: Section[];
+}
+
+export interface WordStats {
+  isFavorite: boolean;
+  correctCount: number;
+  incorrectCount: number;
+  srsLevel: number;
+  nextReview: string | null; // ISO Date String
+  isKnown: boolean;
+  lastReviewed: string | null; // ISO Date String
+}
+
+export interface CustomList {
+  name: string;
+  words: string[]; // array of word strings
+}
+
+export type EnrichedVocabulary = Vocabulary & WordStats;
+
+export interface EnrichedSection {
+  title: string;
+  vocabulary: EnrichedVocabulary[];
+}
+
+export interface UserData {
+  wordStats: Record<string, WordStats>;
+  customLists: CustomList[];
+  srsIntervals: { [key: number]: number };
+  lastQuizState: { type: string; id: string | number; word: string } | null;
 }

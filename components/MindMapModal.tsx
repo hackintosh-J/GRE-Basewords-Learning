@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import React, { useState, useEffect, useRef } from 'react';
-import { Vocabulary } from '../types';
+import { EnrichedVocabulary } from '../types';
+import { XMarkIcon } from './icons';
 
 interface MindMapNode {
   id: number;
@@ -23,7 +24,7 @@ interface MindMapData {
 }
 
 interface MindMapModalProps {
-  vocabulary: Vocabulary[];
+  vocabulary: EnrichedVocabulary[];
   sectionTitle: string;
   onClose: () => void;
 }
@@ -121,7 +122,12 @@ const MindMapModal: React.FC<MindMapModalProps> = ({ vocabulary, sectionTitle, o
       }
     };
 
-    generateMindMap();
+    if(vocabulary.length > 0) {
+        generateMindMap();
+    } else {
+        setIsLoading(false);
+        setError("There are no words in this list to generate a mind map.");
+    }
   }, [vocabulary]);
 
   const sentimentClasses = {
@@ -158,9 +164,7 @@ const MindMapModal: React.FC<MindMapModalProps> = ({ vocabulary, sectionTitle, o
         <header className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Vocabulary Mind Map: <span className="text-indigo-600 dark:text-indigo-400">{sectionTitle}</span></h2>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-slate-600 dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <XMarkIcon className="h-6 w-6 text-slate-600 dark:text-slate-300" />
           </button>
         </header>
 

@@ -1,20 +1,38 @@
-
-import React, { useState, useEffect } from 'react';
-import { Vocabulary, Derivative } from '../types';
+import React, { useState, useEffect, useRef } from 'react';
+import { EnrichedVocabulary, Derivative, CustomList } from '../types';
 import Badge from './Badge';
 import CardSection from './CardSection';
-import { LightBulbIcon, BookOpenIcon, SparklesIcon } from './icons';
+import AddToListPopover from './AddToListPopover';
+import { LightBulbIcon, BookOpenIcon, SparklesIcon, StarIcon, PlusCircleIcon, CheckCircleIcon } from './icons';
 
 interface VocabularyCardProps {
-  wordData: Vocabulary;
+  wordData: EnrichedVocabulary;
+  customLists: CustomList[];
+  onToggleFavorite: (word: string) => void;
+  onToggleWordInList: (listName: string, word: string) => void;
+  onMarkAsKnown: (word: string) => void;
 }
 
-const VocabularyCard: React.FC<VocabularyCardProps> = ({ wordData }) => {
+const VocabularyCard: React.FC<VocabularyCardProps> = ({ wordData, customLists, onToggleFavorite, onToggleWordInList, onMarkAsKnown }) => {
   const [isRevealed, setIsRevealed] = useState(false);
+  const [showAddToList, setShowAddToList] = useState(false);
+  const addToListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsRevealed(false);
   }, [wordData]);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (addToListRef.current && !addToListRef.current.contains(event.target as Node)) {
+        setShowAddToList(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const renderList = (items?: string[], color: 'blue' | 'green' | 'red' | 'yellow' | 'gray' = 'gray') => (
     <div className="flex flex-wrap gap-2">
@@ -33,18 +51,51 @@ const VocabularyCard: React.FC<VocabularyCardProps> = ({ wordData }) => {
   );
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-full min-h-[400px] flex flex-col">
+    <div className={`bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-full min-h-[400px] flex flex-col transition-opacity ${wordData.isKnown ? 'opacity-60' : 'opacity-100'}`}>
       <div className="flex justify-between items-start">
-        <div>
+        <div className="flex-1 pr-4">
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white">{wordData.word}</h2>
           <p className="text-lg text-blue-600 dark:text-blue-400 font-medium mt-1">{wordData.pos}</p>
         </div>
-        <button
-          onClick={() => setIsRevealed(!isRevealed)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm"
-        >
-          {isRevealed ? 'Hide' : 'Reveal'}
-        </button>
+        <div className="flex items-center space-x-1">
+             <button
+                onClick={() => onMarkAsKnown(wordData.word)}
+                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                aria-label={wordData.isKnown ? 'Mark as not known' : 'Mark as known'}
+            >
+                <CheckCircleIcon className={`w-7 h-7 ${wordData.isKnown ? 'text-green-500' : 'text-slate-400'}`} />
+            </button>
+             <div className="relative" ref={addToListRef}>
+                <button
+                    onClick={() => setShowAddToList(prev => !prev)}
+                    className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    aria-label="Add to a custom list"
+                >
+                    <PlusCircleIcon className="w-7 h-7 text-slate-500 dark:text-slate-400" />
+                </button>
+                {showAddToList && (
+                    <AddToListPopover
+                        customLists={customLists}
+                        word={wordData.word}
+                        onToggleWordInList={onToggleWordInList}
+                        onClose={() => setShowAddToList(false)}
+                    />
+                )}
+            </div>
+            <button
+                onClick={() => onToggleFavorite(wordData.word)}
+                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                aria-label={wordData.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            >
+                <StarIcon className={`w-7 h-7 ${wordData.isFavorite ? 'text-yellow-400' : 'text-slate-400'}`} solid={wordData.isFavorite} />
+            </button>
+            <button
+                onClick={() => setIsRevealed(!isRevealed)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm ml-2"
+            >
+                {isRevealed ? 'Hide' : 'Reveal'}
+            </button>
+        </div>
       </div>
 
       <div className={`mt-6 transition-opacity duration-500 flex-grow ${isRevealed ? 'opacity-100' : 'opacity-0'}`}>
