@@ -89,18 +89,21 @@ const MindMapModal: React.FC<MindMapModalProps> = ({ vocabulary, sectionTitle, o
 
         const wordList = JSON.stringify(vocabulary.map(v => ({ word: v.word, definition: v.definition, synonyms: v.synonyms || [] })));
 
-        const prompt = `You are a linguistic expert creating a vocabulary mind map. Based on this list of words from a GRE vocabulary section: ${wordList}.
+        const prompt = `You are a data visualization expert and linguist, tasked with creating a vocabulary mind map. Your goal is to generate a JSON structure for a visually appealing, organic, "Connected Papers"-style network graph.
+
+        Based on this list of GRE vocabulary words: ${wordList}.
 
         Your task is to:
-        1. Group words with similar meanings based on their definitions and provided synonyms. A group can have one or more words.
-        2. For each group, select one main word as the label.
-        3. Determine the primary sentiment of each group: 'positive', 'negative', or 'neutral'.
-        4. Create a 2D layout for these groups for a mind map visualization.
-        5. Identify semantic connections between different groups to draw edges.
-        
-        Structure the output as a single JSON object that conforms to the provided schema. The layout coordinates (x, y) should be percentages (between 5 and 95) to create a visually pleasing, non-overlapping graph.
+        1.  **Identify Core Concepts:** Analyze the words and group them into semantically related clusters. Each cluster represents a core concept. A cluster can have one or more words.
+        2.  **Label Nodes:** For each cluster, choose the most representative word as the node's 'label'.
+        3.  **Determine Sentiment:** Classify the sentiment of each node's concept as 'positive', 'negative', or 'neutral'.
+        4.  **Create Network Layout:**
+            *   Identify the most central theme or concept from the word list. Place this central node near the center of the canvas (e.g., x: 50, y: 50).
+            *   Arrange other nodes based on their semantic relationship to the central theme and to each other. Closely related nodes should be clustered together. The distance between nodes should reflect their semantic similarity.
+            *   Distribute the nodes across the canvas (using x/y percentages from 5 to 95) to create a balanced, aesthetically pleasing, and non-overlapping layout. The layout should look organic, not like a rigid grid.
+        5.  **Define Edges:** Create edges to connect nodes with strong semantic relationships (e.g., synonyms, antonyms, cause-effect, related concepts).
 
-        Return ONLY the JSON object.`;
+        The final output must be a single JSON object conforming to the provided schema. Return ONLY the JSON object.`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',

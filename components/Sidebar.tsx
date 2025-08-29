@@ -1,6 +1,6 @@
 import React from 'react';
 import { Section, CustomList } from '../types';
-import { BookmarkIcon, ExclamationTriangleIcon, CalendarDaysIcon, PlusIcon } from './icons';
+import { BookmarkIcon, ExclamationTriangleIcon, CalendarDaysIcon, PlusIcon, AcademicCapIcon, CheckCircleIcon } from './icons';
 
 interface SidebarProps {
   sections: Section[];
@@ -10,8 +10,10 @@ interface SidebarProps {
   todaysReviewCount: number;
   favoritesCount: number;
   difficultWordsCount: number;
+  knownWordsCount: number;
   onOpenCreateListModal: () => void;
   onOpenCalendar: () => void;
+  onStartQuiz: (view: { type: string; id: string | number }) => void;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -24,8 +26,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     todaysReviewCount,
     favoritesCount, 
     difficultWordsCount,
+    knownWordsCount,
     onOpenCreateListModal,
     onOpenCalendar,
+    onStartQuiz,
     isOpen,
     onClose,
 }) => {
@@ -37,7 +41,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       title: "Today's Review",
       count: todaysReviewCount,
       icon: <CalendarDaysIcon className="w-5 h-5 mr-3 text-green-500" />,
-      action: onOpenCalendar,
     },
     {
       type: 'favorites',
@@ -53,6 +56,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       count: difficultWordsCount,
       icon: <ExclamationTriangleIcon className="w-5 h-5 mr-3 text-red-500" />,
     },
+    {
+      type: 'known',
+      id: 'known',
+      title: 'Known Words',
+      count: knownWordsCount,
+      icon: <CheckCircleIcon className="w-5 h-5 mr-3 text-slate-500" />,
+    }
   ];
 
   const getButtonClass = (isActive: boolean) =>
@@ -83,16 +93,21 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <button
                         onClick={() => handleViewSelection({ type: s.type, id: s.id })}
                         className={`${getButtonClass(currentView.type === s.type)} flex-grow`}
-                        disabled={s.type !== 'review' && s.count === 0}
+                        disabled={s.type !== 'known' && s.count === 0}
                     >
                         {s.icon}
                         <span className="flex-grow">{s.title}</span>
                         <span className={`text-xs font-mono px-2 py-0.5 rounded-full ${currentView.type === s.type ? 'bg-blue-500 text-white' : 'bg-slate-200 dark:bg-slate-600'}`}>{s.count}</span>
                     </button>
-                    {s.action && (
-                       <button onClick={s.action} aria-label="Open Review Calendar" className="p-2 rounded-md text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 dark:text-slate-300">
-                           <CalendarDaysIcon className="w-5 h-5" />
-                       </button>
+                    {s.type === 'review' && (
+                       <>
+                         <button onClick={onOpenCalendar} aria-label="Open Review Calendar" className="p-2 rounded-md text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 dark:text-slate-300">
+                             <CalendarDaysIcon className="w-5 h-5" />
+                         </button>
+                         <button onClick={() => onStartQuiz({ type: 'review', id: 'review' })} disabled={todaysReviewCount === 0} aria-label="Start Review Quiz" className="p-2 rounded-md text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                             <AcademicCapIcon className="w-5 h-5" />
+                         </button>
+                       </>
                     )}
                 </li>
             ))}

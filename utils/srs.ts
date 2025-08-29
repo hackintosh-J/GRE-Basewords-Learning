@@ -31,11 +31,11 @@ export const handleCorrectAnswer = (currentLevel: number = 0, srsIntervals: { [k
 };
 
 export const handleIncorrectAnswer = (currentLevel: number = 0, srsIntervals: { [key: number]: number }) => {
-  // Reset progress, but not completely. See it again soon.
+  // Reset progress, but not completely. Demote by half, but at least to level 1.
   const newLevel = Math.max(1, Math.floor(currentLevel / 2));
   return {
     srsLevel: newLevel,
-    nextReview: getNextReviewDate(newLevel, srsIntervals),
+    nextReview: getNextReviewDate(1, srsIntervals), // Always review again tomorrow after a mistake
     lastReviewed: new Date().toISOString().split('T')[0],
   };
 };

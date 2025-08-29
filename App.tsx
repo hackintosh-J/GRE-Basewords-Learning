@@ -8,7 +8,7 @@ import QuizModal from './components/QuizModal';
 import CreateListModal from './components/CreateListModal';
 import SettingsModal from './components/SettingsModal';
 import ReviewCalendarModal from './components/ReviewCalendarModal';
-import { ChevronLeftIcon, ChevronRightIcon, SparklesIcon, AcademicCapIcon, XMarkIcon } from './components/icons';
+import { ChevronLeftIcon, ChevronRightIcon, SparklesIcon, AcademicCapIcon } from './components/icons';
 import { handleCorrectAnswer, handleIncorrectAnswer, defaultSrsIntervals, calculateDifficulty } from './utils/srs';
 
 const LOCAL_STORAGE_KEY = 'greVocabUserData';
@@ -23,7 +23,6 @@ const App: React.FC = () => {
   const [wordStats, setWordStats] = useState<Record<string, WordStats>>({});
   const [customLists, setCustomLists] = useState<CustomList[]>([]);
   const [srsIntervals, setSrsIntervals] = useState<{ [key: number]: number }>(defaultSrsIntervals);
-  const [lastQuizState, setLastQuizState] = useState<{ type: string; id: string | number; word: string } | null>(null);
 
   const [showMindMap, setShowMindMap] = useState<boolean>(false);
   const [showQuiz, setShowQuiz] = useState<boolean>(false);
@@ -31,7 +30,6 @@ const App: React.FC = () => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
-  const [resumeNotification, setResumeNotification] = useState<{ type: string; id: string | number; word: string } | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [expandedDifficultWord, setExpandedDifficultWord] = useState<string | null>(null);
 
@@ -64,10 +62,6 @@ const App: React.FC = () => {
         if (parsedData.wordStats) setWordStats(parsedData.wordStats);
         if (parsedData.customLists) setCustomLists(parsedData.customLists);
         if (parsedData.srsIntervals) setSrsIntervals(parsedData.srsIntervals);
-        if (parsedData.lastQuizState) {
-            setLastQuizState(parsedData.lastQuizState);
-            setResumeNotification(parsedData.lastQuizState);
-        }
       }
     } catch (e) {
       console.error("Failed to load user data from localStorage", e);
@@ -80,14 +74,14 @@ const App: React.FC = () => {
       wordStats,
       customLists,
       srsIntervals,
-      lastQuizState
+      lastQuizState: null, // This is now deprecated but kept for backward compatibility if needed.
     };
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
     } catch (e) {
       console.error("Failed to save user data to localStorage", e);
     }
-  }, [wordStats, customLists, srsIntervals, lastQuizState]);
+  }, [wordStats, customLists, srsIntervals]);
 
    useEffect(() => {
     if (notification) {
@@ -133,31 +127,52 @@ const App: React.FC = () => {
       return Array.from(enrichedVocabularyMap.values()).filter(v => !v.isKnown && v.nextReview && v.nextReview <= today);
   }, [enrichedVocabularyMap]);
 
+  const knownWordsList: EnrichedVocabulary[] = useMemo(() => 
+    Array.from(enrichedVocabularyMap.values()).filter(v => v.isKnown),
+    [enrichedVocabularyMap]
+  );
+
   const handleSelectView = (view: { type: string; id: string | number }) => {
     setActiveView(view);
     setCurrentWordIndex(0);
   };
 
   const currentList: EnrichedVocabulary[] = useMemo(() => {
+    if (activeView.type === 'known') return knownWordsList;
+
+    let baseList: (EnrichedVocabulary | undefined)[] = [];
     switch(activeView.type) {
-        case 'review': return todaysReviewList;
-        case 'favorites': return favoritesList;
-        case 'difficult': return difficultWordsList;
-        case 'section': return (enrichedSections[activeView.id as number]?.vocabulary || []).filter(v => !v.isKnown);
+        case 'review': baseList = todaysReviewList; break;
+        case 'favorites': baseList = favoritesList; break;
+        case 'difficult': baseList = difficultWordsList; break;
+        case 'section': 
+            baseList = enrichedSections[activeView.id as number]?.vocabulary || [];
+            break;
         case 'custom': {
-            if (typeof activeView.id !== 'string') return [];
             const list = customLists.find(l => l.name === activeView.id);
-            return list ? list.words.map(word => enrichedVocabularyMap.get(word)!).filter(v => v && !v.isKnown) : [];
+            if (list) {
+                baseList = list.words.map(word => enrichedVocabularyMap.get(word));
+            }
+            break;
         }
         default: return [];
     }
-  }, [activeView, todaysReviewList, favoritesList, difficultWordsList, enrichedSections, customLists, enrichedVocabularyMap]);
+    
+    // Smart lists are pre-filtered. Section and custom lists need filtering.
+    if (activeView.type === 'section' || activeView.type === 'custom') {
+         return baseList.filter((v): v is EnrichedVocabulary => !!v && !v.isKnown);
+    }
+    
+    return baseList.filter((v): v is EnrichedVocabulary => !!v);
+
+}, [activeView, todaysReviewList, favoritesList, difficultWordsList, knownWordsList, enrichedSections, customLists, enrichedVocabularyMap]);
   
   const currentSectionTitle: string = useMemo(() => {
     switch(activeView.type) {
         case 'review': return "Today's Review";
         case 'favorites': return 'My Favorites';
         case 'difficult': return 'Difficult Words';
+        case 'known': return 'Known Words';
         case 'section': return enrichedSections[activeView.id as number]?.title || '';
         case 'custom': return typeof activeView.id === 'string' ? activeView.id : '';
         default: return '';
@@ -181,7 +196,7 @@ const App: React.FC = () => {
         const currentStat = prev[word] || defaultWordStat;
         return {
             ...prev,
-            [word]: { ...currentStat, isKnown: !currentStat.isKnown }
+            [word]: { ...currentStat, isKnown: !currentStat.isKnown, nextReview: null } // Reset review schedule when known
         };
     });
   };
@@ -208,28 +223,30 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleQuizComplete = (results: Record<string, { correct: number, incorrect: number }>, quizState: { type: string; id: string | number; word: string } | null) => {
-    setShowQuiz(false);
-    setLastQuizState(quizState);
+  const handleAnswer = (word: string, knewIt: boolean) => {
     setWordStats(prev => {
-      const newStats = { ...prev };
-      for (const word in results) {
-        const currentStat = newStats[word] || defaultWordStat;
-        const srsChange = results[word].correct > 0 
-            ? handleCorrectAnswer(currentStat.srsLevel, srsIntervals) 
+        const currentStat = prev[word] || defaultWordStat;
+        const srsChange = knewIt
+            ? handleCorrectAnswer(currentStat.srsLevel, srsIntervals)
             : handleIncorrectAnswer(currentStat.srsLevel, srsIntervals);
         
-        newStats[word] = {
-          ...currentStat,
-          correctCount: currentStat.correctCount + results[word].correct,
-          incorrectCount: currentStat.incorrectCount + results[word].incorrect,
-          srsLevel: srsChange.srsLevel,
-          nextReview: srsChange.nextReview,
-          lastReviewed: srsChange.lastReviewed,
+        return {
+            ...prev,
+            [word]: {
+                ...currentStat,
+                correctCount: currentStat.correctCount + (knewIt ? 1 : 0),
+                incorrectCount: currentStat.incorrectCount + (knewIt ? 0 : 1),
+                srsLevel: srsChange.srsLevel,
+                nextReview: srsChange.nextReview,
+                lastReviewed: srsChange.lastReviewed,
+            }
         };
-      }
-      return newStats;
     });
+  };
+
+  const handleStartQuiz = (view: { type: string; id: string | number }) => {
+    handleSelectView(view);
+    setShowQuiz(true);
   };
 
   const handleExportData = () => {
@@ -238,7 +255,7 @@ const App: React.FC = () => {
         wordStats,
         customLists,
         srsIntervals,
-        lastQuizState
+        lastQuizState: null
       };
       const dataStr = JSON.stringify(dataToExport, null, 2);
       const blob = new Blob([dataStr], { type: "application/json" });
@@ -274,7 +291,6 @@ const App: React.FC = () => {
             setWordStats(importedData.wordStats || {});
             setCustomLists(importedData.customLists || []);
             setSrsIntervals(importedData.srsIntervals || defaultSrsIntervals);
-            setLastQuizState(importedData.lastQuizState || null);
             setNotification({ message: 'Data imported successfully!', type: 'success' });
           } catch (err) {
             setNotification({ message: `Error importing data: ${err instanceof Error ? err.message : 'Invalid file'}`, type: 'error' });
@@ -285,35 +301,6 @@ const App: React.FC = () => {
     };
     input.click();
   };
-
-  const handleResumeSession = () => {
-    if (!resumeNotification) return;
-
-    const { type, id } = resumeNotification;
-    let listToSearch: EnrichedVocabulary[] = [];
-
-    switch(type) {
-        case 'review': listToSearch = todaysReviewList; break;
-        case 'favorites': listToSearch = favoritesList; break;
-        case 'difficult': listToSearch = difficultWordsList; break;
-        case 'section': listToSearch = (enrichedSections[id as number]?.vocabulary || []); break;
-        case 'custom': {
-            const list = customLists.find(l => l.name === id);
-            listToSearch = list ? list.words.map(word => enrichedVocabularyMap.get(word)!).filter(Boolean) : [];
-            break;
-        }
-    }
-    
-    const wordIndex = listToSearch.findIndex(v => v.word === resumeNotification.word);
-    
-    if (wordIndex !== -1) {
-        setActiveView({ type, id });
-        setCurrentWordIndex(wordIndex);
-    }
-    
-    setResumeNotification(null);
-  };
-
 
   if (isLoading) return <div className="flex items-center justify-center min-h-screen text-xl text-slate-500">Loading Vocabulary...</div>;
   if (error) return <div className="flex items-center justify-center min-h-screen text-center text-red-500 bg-red-50 p-4"><div className="max-w-md"><h2 className="text-2xl font-bold mb-2">Error</h2><p className="text-red-700">{error}</p></div></div>;
@@ -326,15 +313,6 @@ const App: React.FC = () => {
       {notification && (
         <div className={`fixed top-5 right-5 z-50 p-4 rounded-md shadow-lg text-white ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
           {notification.message}
-        </div>
-      )}
-       {resumeNotification && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 p-3 max-w-lg w-full bg-blue-600 text-white rounded-md shadow-lg flex items-center justify-between gap-4">
-            <p className="text-sm">Welcome back! Last quiz was on <strong className="font-bold">{`'${resumeNotification.word}'`}</strong>. Resume?</p>
-            <div className="flex gap-2">
-                <button onClick={handleResumeSession} className="px-3 py-1 bg-white text-blue-700 rounded text-sm font-semibold hover:bg-blue-50">Resume</button>
-                <button onClick={() => setResumeNotification(null)} className="p-1 hover:bg-blue-500/50 rounded-full"><XMarkIcon className="w-5 h-5"/></button>
-            </div>
         </div>
       )}
       <AppHeader 
@@ -352,8 +330,10 @@ const App: React.FC = () => {
           todaysReviewCount={todaysReviewList.length}
           favoritesCount={favoritesList.length}
           difficultWordsCount={difficultWordsList.length}
+          knownWordsCount={knownWordsList.length}
           onOpenCreateListModal={() => setShowCreateList(true)}
           onOpenCalendar={() => setShowCalendar(true)}
+          onStartQuiz={handleStartQuiz}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
         />
@@ -466,8 +446,7 @@ const App: React.FC = () => {
           vocabulary={currentList}
           sectionTitle={currentSectionTitle}
           onClose={() => setShowQuiz(false)}
-          onComplete={handleQuizComplete}
-          activeView={activeView}
+          onAnswer={handleAnswer}
         />
       )}
       {showCreateList && (

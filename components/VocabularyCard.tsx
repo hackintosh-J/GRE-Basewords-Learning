@@ -51,7 +51,7 @@ const VocabularyCard: React.FC<VocabularyCardProps> = ({ wordData, customLists, 
   );
 
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-full min-h-[400px] flex flex-col transition-opacity ${wordData.isKnown ? 'opacity-60' : 'opacity-100'}`}>
+    <div className={`bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-full min-h-[400px] flex flex-col transition-opacity ${wordData.isKnown ? 'opacity-50' : 'opacity-100'}`}>
       <div className="flex justify-between items-start">
         <div className="flex-1 pr-4">
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white">{wordData.word}</h2>
@@ -63,7 +63,7 @@ const VocabularyCard: React.FC<VocabularyCardProps> = ({ wordData, customLists, 
                 className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                 aria-label={wordData.isKnown ? 'Mark as not known' : 'Mark as known'}
             >
-                <CheckCircleIcon className={`w-7 h-7 ${wordData.isKnown ? 'text-green-500' : 'text-slate-400'}`} />
+                <CheckCircleIcon className={`w-7 h-7 transition-colors ${wordData.isKnown ? 'text-green-500 hover:text-green-600' : 'text-slate-400 hover:text-slate-500'}`} />
             </button>
              <div className="relative" ref={addToListRef}>
                 <button
