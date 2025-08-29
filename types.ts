@@ -51,5 +51,5 @@ export interface UserData {
   wordStats: Record<string, WordStats>;
   customLists: CustomList[];
   srsIntervals: { [key: number]: number };
-  lastQuizState: { type: string; id: string | number; word: string } | null; // Deprecated, but kept for potential backward compatibility
+  lastViewState: { type: string; id: string | number; index: number } | null;
 }

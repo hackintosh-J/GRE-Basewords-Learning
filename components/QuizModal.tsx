@@ -17,9 +17,12 @@ const QuizModal: React.FC<QuizModalProps> = ({ vocabulary, sectionTitle, onClose
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
-    // Shuffling is done once when the component mounts
+    // Shuffling is done once when the component mounts.
+    // The `vocabulary` prop is an array that gets a new reference on each re-render of App,
+    // which was causing a reshuffle on every answer.
+    // By setting it only once when the component mounts, we ensure the quiz order is stable for the session.
     setShuffledWords([...vocabulary].sort(() => Math.random() - 0.5));
-  }, [vocabulary]);
+  }, []); // Intentionally using an empty dependency array to run only once
 
   const handleUserAnswer = (knewIt: boolean) => {
     const word = shuffledWords[currentIndex];

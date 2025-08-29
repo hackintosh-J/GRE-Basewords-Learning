@@ -62,6 +62,10 @@ const App: React.FC = () => {
         if (parsedData.wordStats) setWordStats(parsedData.wordStats);
         if (parsedData.customLists) setCustomLists(parsedData.customLists);
         if (parsedData.srsIntervals) setSrsIntervals(parsedData.srsIntervals);
+        if (parsedData.lastViewState) {
+            setActiveView(parsedData.lastViewState);
+            setCurrentWordIndex(parsedData.lastViewState.index || 0);
+        }
       }
     } catch (e) {
       console.error("Failed to load user data from localStorage", e);
@@ -70,18 +74,19 @@ const App: React.FC = () => {
 
   // Save user data to localStorage whenever it changes
   useEffect(() => {
+    if (isLoading) return; // Don't save initial state until vocab data is loaded
     const dataToSave: UserData = {
       wordStats,
       customLists,
       srsIntervals,
-      lastQuizState: null, // This is now deprecated but kept for backward compatibility if needed.
+      lastViewState: { type: activeView.type, id: activeView.id, index: currentWordIndex },
     };
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
     } catch (e) {
       console.error("Failed to save user data to localStorage", e);
     }
-  }, [wordStats, customLists, srsIntervals]);
+  }, [wordStats, customLists, srsIntervals, activeView, currentWordIndex, isLoading]);
 
    useEffect(() => {
     if (notification) {
@@ -255,7 +260,7 @@ const App: React.FC = () => {
         wordStats,
         customLists,
         srsIntervals,
-        lastQuizState: null
+        lastViewState: { type: activeView.type, id: activeView.id, index: currentWordIndex },
       };
       const dataStr = JSON.stringify(dataToExport, null, 2);
       const blob = new Blob([dataStr], { type: "application/json" });
@@ -316,10 +321,13 @@ const App: React.FC = () => {
         </div>
       )}
       <AppHeader 
-        onImport={handleImportData}
-        onExport={handleExportData}
         onSettings={() => setShowSettings(true)}
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        currentWord={currentWord || null}
+        customLists={customLists}
+        onToggleFavorite={handleToggleFavorite}
+        onMarkAsKnown={handleMarkAsKnown}
+        onToggleWordInList={handleToggleWordInList}
       />
       <main className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 relative">
         <Sidebar
@@ -378,11 +386,7 @@ const App: React.FC = () => {
             currentWord ? (
               <VocabularyCard 
                 key={`${activeView.type}-${activeView.id}-${currentWordIndex}`} 
-                wordData={currentWord} 
-                customLists={customLists}
-                onToggleFavorite={handleToggleFavorite}
-                onToggleWordInList={handleToggleWordInList}
-                onMarkAsKnown={handleMarkAsKnown}
+                wordData={currentWord}
               />
             ) : (
               <div className="flex items-center justify-center flex-grow bg-white dark:bg-slate-800 rounded-lg shadow-lg min-h-[400px]">
@@ -458,6 +462,8 @@ const App: React.FC = () => {
             currentIntervals={srsIntervals}
             onSave={setSrsIntervals}
             onClose={() => setShowSettings(false)}
+            onImport={handleImportData}
+            onExport={handleExportData}
         />
       )}
        {showCalendar && (

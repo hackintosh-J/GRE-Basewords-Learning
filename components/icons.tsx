@@ -87,7 +87,7 @@ export const PlusIcon: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 export const Cog6ToothIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-1.007 1.113-1.113l.44-2.4c.11-.643.64-1.123 1.29-1.123h2.113c.65 0 1.18.48 1.29 1.123l.44 2.4c.553.106 1.023.57 1.113 1.113l2.4.44c.643.11.903.844.58 1.414l-1.56 1.953a1.125 1.125 0 01-.162 1.305l1.56 1.953c.323.57-.062 1.305-.702 1.414l-2.4.44a1.125 1.125 0 01-1.113 1.113l-.44 2.4c-.11.643-.64 1.123-1.29 1.123h-2.113c-.65 0-1.18-.48-1.29-1.123l-.44-2.4a1.125 1.125 0 01-1.113-1.113l-2.4-.44c-.643-.11-.903-.844-.58-1.414l1.56-1.953a1.125 1.125 0 01.162-1.305l-1.56-1.953c-.323-.57.062-1.305.702-1.414l2.4-.44zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z" />
     </svg>
 );
