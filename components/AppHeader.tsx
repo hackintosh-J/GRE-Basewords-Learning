@@ -17,8 +17,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onImport, onExport, onSettings, o
                <Bars3Icon className="w-6 h-6" />
             </button>
              <div>
-              <h1 className="text-2xl font-extrabold text-slate-800 dark:text-white tracking-tight">GRE Vocabulary Builder</h1>
-              <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Your intelligent flashcard study tool.</p>
+              <h1 className="text-2xl font-extrabold text-slate-800 dark:text-white tracking-tight">GRE</h1>
             </div>
         </div>
         <div className="flex items-center gap-2">
