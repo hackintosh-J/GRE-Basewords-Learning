@@ -1,0 +1,204 @@
+{
+  "themes": [
+    {
+      "name": "变化与稳定 (Change & Stability)",
+      "color": "blue",
+      "synonyms": [
+        { "word": "capricious", "definition": "多变的, 反复无常的, 任性的" },
+        { "word": "fickle", "definition": "易变的, 无常的" },
+        { "word": "volatile", "definition": "挥发性的, 不稳定的, 反复无常的" },
+        { "word": "mercurial", "definition": "水银的, 多变的, 活泼机智的" },
+        { "word": "erratic", "definition": "不稳定的, 不规则的, 古怪的" },
+        { "word": "flighty", "definition": "轻浮的, 反反复复的" },
+        { "word": "turbulent", "definition": "动荡的, 湍急的" },
+        { "word": "upheaval", "definition": "剧变, 动乱" },
+        { "word": "oscillate", "definition": "摇摆, 波动" },
+        { "word": "vacillate", "definition": "犹豫不决" }
+      ],
+      "antonyms": [
+        { "word": "stable", "definition": "稳定的" },
+        { "word": "constant", "definition": "不变的" },
+        { "word": "steadfast", "definition": "坚定的" },
+        { "word": "consistent", "definition": "一致的, 始终的, 连续的" },
+        { "word": "immutable", "definition": "永恒的, 不变的" }
+      ]
+    },
+    {
+      "name": "批评与赞扬 (Criticism & Praise)",
+      "color": "red",
+      "synonyms": [
+        { "word": "censure", "definition": "谴责" },
+        { "word": "decry", "definition": "谴责" },
+        { "word": "condemn", "definition": "谴责" },
+        { "word": "deplore", "definition": "谴责" },
+        { "word": "excoriate", "definition": "严厉指责, 谴责" },
+        { "word": "lambaste", "definition": "猛烈抨击, 公开批评" },
+        { "word": "castigate", "definition": "严厉批评, 斥责, 谴责" },
+        { "word": "chastise", "definition": "斥责, 体罚" },
+        { "word": "animadvert", "definition": "谴责" },
+        { "word": "rant", "definition": "咆哮, 怒吼" },
+        { "word": "scold", "definition": "斥责, 责骂" },
+        { "word": "reprimand", "definition": "谴责, 斥责" },
+        { "word": "reproach", "definition": "责备, 指责" },
+        { "word": "diatribe", "definition": "指责, 谴责" },
+        { "word": "disparage", "definition": "贬低, 轻视, 诋毁" },
+        { "word": "deride", "definition": "嘲笑, 嘲讽" },
+        { "word": "vilify", "definition": "诽谤" }
+      ],
+      "antonyms": [
+        { "word": "laud", "definition": "赞美" },
+        { "word": "exalt", "definition": "赞美, 赞扬" },
+        { "word": "encomium", "definition": "颂词, 赞美" },
+        { "word": "eulogize", "definition": "赞扬, 称赞" },
+        { "word": "compliment", "definition": "恭维" },
+        { "word": "flatter", "definition": "奉承, 谄媚" },
+        { "word": "valorize", "definition": "赞美" },
+        { "word": "glorify", "definition": "赞美, 美化" }
+      ]
+    },
+    {
+      "name": "清晰与模糊 (Clarity & Obscurity)",
+      "color": "indigo",
+      "synonyms": [
+        { "word": "ambiguous", "definition": "模糊的, 难懂的" },
+        { "word": "vague", "definition": "模糊的" },
+        { "word": "obscure", "definition": "模糊的, 难懂的" },
+        { "word": "convoluted", "definition": "复杂的, 难懂的" },
+        { "word": "intricate", "definition": "复杂的, 精细的" },
+        { "word": "abstruse", "definition": "深奥的, 难懂的" },
+        { "word": "esoteric", "definition": "限于小圈子的, 难懂的" },
+        { "word": "arcane", "definition": "神秘的, 难懂的" },
+        { "word": "enigmatic", "definition": "谜一样的" },
+        { "word": "impenetrable", "definition": "难以穿越的, 不能理解的" },
+        { "word": "nebulous", "definition": "星云的, 模糊的" },
+        { "word": "unintelligible", "definition": "难懂的" },
+        { "word": "unfathomable", "definition": "高深莫测的, 难懂的" }
+      ],
+      "antonyms": [
+        { "word": "unambiguous", "definition": "清晰的, 好懂的" },
+        { "word": "intelligible", "definition": "易懂的, 可以理解的" },
+        { "word": "lucid", "definition": "明晰的, 易懂的" },
+        { "word": "pellucid", "definition": "透明的, 好懂的" },
+        { "word": "explicit", "definition": "清楚的, 易于理解的, 明确的" },
+        { "word": "manifest", "definition": "明显的" },
+        { "word": "patent", "definition": "显而易见的" },
+        { "word": "straightforward", "definition": "坦率的, 易懂的" }
+      ],
+       "distinctions": [
+        { "word1": "ambiguous (模糊的)", "word2": "ambivalent (矛盾的)" }
+      ]
+    },
+    {
+      "name": "常见与新颖 (Commonplace & Novel)",
+      "color": "yellow",
+      "synonyms": [
+        { "word": "commonplace", "definition": "平凡的, 司空见惯的" },
+        { "word": "mundane", "definition": "世俗的, 平凡的" },
+        { "word": "prosaic", "definition": "平凡的" },
+        { "word": "pedestrian", "definition": "平庸乏味的" },
+        { "word": "banal", "definition": "陈腐的, 平庸乏味的" },
+        { "word": "cliche", "definition": "陈词滥调" },
+        { "word": "platitude", "definition": "陈词滥调" },
+        { "word": "truism", "definition": "老生常谈, 陈词滥调" },
+        { "word": "tedious", "definition": "乏味烦人的" },
+        { "word": "vapid", "definition": "无趣的, 乏味的" },
+        { "word": "insipid", "definition": "乏味的, 没有滋味的" },
+        { "word": "jejune", "definition": "幼稚的, 枯燥乏味的" },
+        { "word": "well-worn", "definition": "用旧了, 老生常谈的" },
+        { "word": "stale", "definition": "陈腐的, 不新鲜的" },
+        { "word": "formulaic", "definition": "公式化的, 刻板的" }
+      ],
+      "antonyms": [
+        { "word": "novel", "definition": "新颖的" },
+        { "word": "original", "definition": "原创的" },
+        { "word": "unconventional", "definition": "非传统的" },
+        { "word": "engaging", "definition": "迷人的" },
+        { "word": "absorbing", "definition": "引人入胜的" },
+        { "word": "intriguing", "definition": "吸引人的, 有趣的" },
+        { "word": "pioneering", "definition": "先锋的, 先驱的" }
+      ]
+    },
+    {
+      "name": "固执与顺从 (Stubborn & Compliant)",
+      "color": "purple",
+      "synonyms": [
+        { "word": "intransigent", "definition": "顽固的, 不妥协的" },
+        { "word": "unyielding", "definition": "不让步的, 固执的" },
+        { "word": "uncompromising", "definition": "不让步的, 坚定的" }
+      ],
+      "antonyms": [
+        { "word": "yielding", "definition": "顺从的" },
+        { "word": "compliant", "definition": "顺从的, 服从的" },
+        { "word": "tractable", "definition": "易于管教的, 易于驾驭的" },
+        { "word": "conciliatory", "definition": "愿意和解的" },
+        { "word": "acquiescent", "definition": "默许的" },
+        { "word": "docile", "definition": "温顺的" }
+      ]
+    },
+    {
+      "name": "敌意与友好 (Hostility & Friendliness)",
+      "color": "pink",
+      "synonyms": [
+        { "word": "adversarial", "definition": "对抗的, 对立的" },
+        { "word": "antagonistic", "definition": "敌对的, 不相容的" },
+        { "word": "hostile", "definition": "敌对的, 反对的" },
+        { "word": "inimical", "definition": "敌意的, 有害的" }
+      ],
+      "antonyms": [
+        { "word": "amicable", "definition": "友好的, 友善" },
+        { "word": "affable", "definition": "和蔼可亲的" },
+        { "word": "cordial", "definition": "热情友好的" },
+        { "word": "congenial", "definition": "意气相投的, 相宜的" },
+        { "word": "convivial", "definition": "欢乐的, 友好的" }
+      ]
+    },
+    {
+      "name": "短暂与持久 (Brief & Lasting)",
+      "color": "teal",
+      "synonyms": [
+        { "word": "ephemeral", "definition": "短暂的" },
+        { "word": "transient", "definition": "短暂的" },
+        { "word": "transitory", "definition": "短暂的" },
+        { "word": "momentary", "definition": "瞬间的, 短暂的" },
+        { "word": "fleeting", "definition": "飞逝的, 闪现的" },
+        { "word": "evanescent", "definition": "容易消散的, 短暂的" }
+      ],
+      "antonyms": [
+        { "word": "perennial", "definition": "多年生的, 长久的" },
+        { "word": "long-standing", "definition": "长期存在的, 一直都有的" },
+        { "word": "enduring", "definition": "持久的" },
+        { "word": "eternal", "definition": "永恒的" }
+      ],
+      "distinctions": [
+        { "word1": "momentary (短暂的)", "word2": "momentous (重大的)" }
+      ]
+    },
+    {
+      "name": "虚假与真实 (False & True)",
+      "color": "orange",
+      "synonyms": [
+        { "word": "disingenuous", "definition": "虚伪的, 不诚实的" },
+        { "word": "duplicitous", "definition": "奸诈的, 双重的" },
+        { "word": "specious", "definition": "似是而非的, 华而不实的" },
+        { "word": "mendacious", "definition": "撒谎的" },
+        { "word": "counterfeit", "definition": "伪造的" },
+        { "word": "fake", "definition": "假的" },
+        { "word": "illusory", "definition": "虚幻的, 虚假的" },
+        { "word": "delusive", "definition": "欺骗的, 虚假的" },
+        { "word": "fictitious", "definition": "虚构的, 虚假的" },
+        { "word": "feigned", "definition": "假装的" }
+      ],
+      "antonyms": [
+        { "word": "artless", "definition": "天真的" },
+        { "word": "ingenuous", "definition": "老实的, 天真的" },
+        { "word": "authentic", "definition": "真正的, 真实的" },
+        { "word": "veracious", "definition": "诚实的" },
+        { "word": "unaffected", "definition": "自然真诚的" }
+      ],
+      "distinctions": [
+        { "word1": "ingenuous (天真的)", "word2": "ingenious (心灵手巧的)" },
+        { "word1": "disingenuous (不真诚的)", "word2": "indigenous (本土的)" }
+      ]
+    }
+  ]
+}
